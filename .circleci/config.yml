@@ -102,7 +102,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
       - send-notification
-      
+
   scan-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -113,8 +113,8 @@ jobs:
           name: Audit backend
           command: |
             cd backend
-            npm install
-            npm audit fix --force
+            npm installl
+            npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
       - send-notification
 
