@@ -24,6 +24,13 @@ commands:
           paths: [backend/node_modules]
           key: frontend-build
 
+  send-notification:
+    steps:
+      - slack/notify:
+          channel: D03PUBCHLAX
+          event: fail
+          template: basic_fail_1
+
 
 jobs:
   build-frontend:
@@ -94,11 +101,8 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      - slack/notify:
-          channel: D03PUBCHLAX
-          event: fail
-          template: basic_fail_1
-
+      - send-notification
+      
   scan-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -110,12 +114,9 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix  --force
+            npm audit fix --force
             npm audit --audit-level=critical
-      - slack/notify:
-          channel: D03PUBCHLAX
-          event: fail
-          template: basic_fail_1
+      - send-notification
 
 workflows:
   default:
