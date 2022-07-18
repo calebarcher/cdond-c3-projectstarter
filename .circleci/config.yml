@@ -1,42 +1,91 @@
 version: 2.1
 
+commands:
+  restore-frontend-cache:
+    steps:
+      - restore_cache:
+          keys: [frontend-build]
+
+  restore-backend-cache:
+    steps:
+      - restore_cache:
+          keys: [backend-build]
+
+  save-frontend-cache:
+    steps:
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
+
+  save-backend-cache:
+    steps:
+      - save_cache:
+          paths: [backend/node_modules]
+          key: frontend-build
+
+
 jobs:
   build-frontend:
     docker:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
+      - restore-frontend-cache
       - run:
           name: Build front-end
           command: |
             cd frontend
             npm install
             npm run build
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+      - save-frontend-cache
 
   build-backend:
     docker:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      - restore-backend-cache
       - run:
           name: Back-end build
           command: |
              cd backend
              npm install
              npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+      - save-backend-cache
+  
+  test-frontend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore-frontend-cache
+      - run:
+          name: Testing the frontend.
+          command: |
+            cd frontend
+            npm install
+            npm run test
+      
+              
+  test-backend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore-backend-cache
+      - run:
+          name: Testing the frontend.
+          command: |
+            cd backend
+            npm install
+            npm run test
 
 workflows:
   default:
     jobs:
       - build-frontend
       - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
