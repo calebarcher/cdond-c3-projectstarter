@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  slack: circleci/slack@4.1
 commands:
   restore-frontend-cache:
     steps:
@@ -93,6 +94,10 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+      - slack/notify:
+          channel: D03PUBCHLAX
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
     docker:
@@ -107,6 +112,10 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+      - slack/notify:
+          channel: D03PUBCHLAX
+          event: fail
+          template: basic_fail_1
 
 workflows:
   default:
@@ -119,5 +128,7 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+          context: slack-secrets
       - scan-backend:
           requires: [build-backend]
+          context: slack-secrets
