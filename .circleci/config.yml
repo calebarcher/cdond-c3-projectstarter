@@ -41,16 +41,7 @@ commands:
           channel: D03PUBCHLAX
           event: fail
           template: basic_fail_1
-
-  install_awscli:
-    description: Install AWS CLI v2
-    steps:
-      - run:
-          name: Install AWS CLI v2
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install 
+  
 
 
 jobs:
@@ -227,8 +218,8 @@ jobs:
           command: |
             yum install -y tar gzip
             yum install -y gcc-c++ make 
-            curl -sL https://rpm.nodesource.com/setup_14.x | -E bash - 
-            yum install nodejs 
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash - 
+            sudo yum install -y nodejs 
       - attach_workspace:
           at: ~/project/.circleci/ansible/
       - run:
@@ -266,7 +257,8 @@ jobs:
             apk add --update tar gzip
             apk add --update nodejs npm
             apk add --update ansible
-      - install_awscli
+            apk add --update python py-pip 
+            pip install awscli
       - run:
           name: Deploy backend
           command: |
