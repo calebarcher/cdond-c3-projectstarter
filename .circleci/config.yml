@@ -175,7 +175,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
       - attach_workspace:
-          at: ~/project/.circleci/ansible/
+          at: ~/
       - run:
           name: Install Ansible
           command: |
@@ -221,7 +221,7 @@ jobs:
             apk add --update python py-pip 
             pip install awscli
       - attach_workspace:
-          at: ~/project/.circleci/ansible/
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -230,7 +230,9 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}" >> frontend/.env
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -250,7 +252,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
       - attach_workspace:
-          at: ~/project/.circleci/ansible/
+          at: ~/
       - run:
           name: Install dependencies
           command: |
