@@ -1,0 +1,32 @@
+---
+- name: "Update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "Upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: "Remove dependencies that are no longer required"
+  become: yes
+  apt:
+    autoremove: yes
+
+- name: "Install Node.js"
+  become: yes
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+    sudo npm install -g n
+    sudo n 13.8.0
+
+- name: "Install Pm2"
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present

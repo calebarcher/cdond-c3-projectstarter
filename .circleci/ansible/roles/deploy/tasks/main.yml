@@ -1,0 +1,19 @@
+---
+- name: "Create directory"
+  file:
+    path: ~/udapeople
+    state: directory
+
+- name: "Extract the backend"
+  shell: |
+    tar -czvf backend.tar.gz ~/udapeople
+
+- name: "Install Dependencies"
+  shell: |
+    npm install
+
+
+- name: "Run pm2"
+  shell: |
+    cd ~/udapeople/backend
+    pm2 start npm -- start
