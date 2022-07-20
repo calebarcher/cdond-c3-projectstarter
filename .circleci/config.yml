@@ -290,3 +290,7 @@ workflows:
             branches:
               only: [master]
           context: slack_secrets
+      - deploy-frontend:
+          requires: [deploy-infrastructure]
+      - deploy-backend:
+          requires: [deploy-infrastructure]
