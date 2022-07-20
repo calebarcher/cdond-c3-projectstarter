@@ -190,9 +190,16 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - restore-backend-cache
+      - run:
+          name: Install Dependencies
+          command: |
+            apk add --update nodejs npm
+            apk add --update python py-pip 
+            pip install awscli
       - run:
           name: Run migrations
           command: |
