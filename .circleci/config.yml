@@ -140,7 +140,6 @@ jobs:
               #--tags project=udapeople-project-backend \
               # --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
               # --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              exit 1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -180,4 +179,5 @@ workflows:
       - scan-backend:
           requires: [build-backend]
           context: slack_secrets
-      - deploy-infrastructure
+      - deploy-infrastructure:
+          context: slack_secrets
