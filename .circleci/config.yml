@@ -217,7 +217,9 @@ jobs:
           name: Install dependencies
           command: |
             yum install -y tar gzip
-            yum install -y nodejs npm
+            yum install -y gcc-c++ make 
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash - 
+            sudo yum install nodejs 
       - attach_workspace:
           at: ~/project/.circleci/ansible/
       - run:
@@ -252,9 +254,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install -y tar gzip
-            yum install -y nodejs npm
+            apk add --update tar gzip
+            apk add --update nodejs npm
             apk add --update ansible
+            apk add --no-cache aws-cli
       - run:
           name: Deploy backend
           command: |
