@@ -127,7 +127,7 @@ jobs:
             npm audit fix --audit-level=critical
       - send-notification
 
-   deploy-infrastructure:
+  deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -149,7 +149,6 @@ jobs:
               #--tags project=udapeople-project-frontend \
               # --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
               # --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              exit 1
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -162,6 +161,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - send-notification
       - destroy-environment
 
  
@@ -180,3 +180,4 @@ workflows:
       - scan-backend:
           requires: [build-backend]
           context: slack_secrets
+      - deploy-infrastructure
