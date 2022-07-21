@@ -230,6 +230,7 @@ jobs:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
       - install_awscli
       - install_nodejs
+      - install_ansible
       - attach_workspace:
           at: ~/
       # - run:
@@ -283,6 +284,8 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
+      - install_awscli
+      - install_nodejs
       - run:
           name: Install dependencies
           command: |
@@ -321,6 +324,7 @@ jobs:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
       - install_awscli
       - install_nodejs
+      - install_ansible
       - attach_workspace:
           at: ~/
       - run:
