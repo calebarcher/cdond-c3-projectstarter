@@ -41,7 +41,24 @@ commands:
           channel: D03PUBCHLAX
           event: fail
           template: basic_fail_1
-  
+
+  install_awscli:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install       
+
+  install_ansible:
+    description: Install Ansible
+    steps:
+      - run:
+          name: Install Ansible
+          command: |
+            python3 -m pip install --user ansible  
 
 
 jobs:
@@ -190,16 +207,18 @@ jobs:
 
   run-migrations:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/python:3.10
     steps:
       - checkout
       - restore-backend-cache
-      - run:
-          name: Install Dependencies
-          command: |
-            apk add --update nodejs npm
-            apk add --update python py-pip 
-            pip install awscli
+      - install_awscli
+      - install_nodejs
+      # - run:
+      #     name: Install Dependencies
+      #     command: |
+      #       apk add --update nodejs npm
+      #       apk add --update python py-pip 
+      #       pip install awscli
       - run:
           name: Run migrations
           command: |
