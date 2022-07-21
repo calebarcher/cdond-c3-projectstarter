@@ -13,7 +13,6 @@
   shell: |
     cd ~/udapeople
     npm install
-    npm run build
 
 - name: "Run pm2"
   shell: |
