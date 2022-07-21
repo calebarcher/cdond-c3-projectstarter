@@ -13,6 +13,28 @@ commands:
              aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
              aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
              aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+  
+  revert-migrations:
+    description: Revert the last migration, if any were executed during the current workflow
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
+
+            # Logic for reverting the database state
+            if (( $SUCCESS == 1 ));
+            then
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+            fi
+
   restore-frontend-cache:
     steps:
       - restore_cache:
@@ -59,6 +81,7 @@ commands:
           name: Install Ansible
           command: |
             python3 -m pip install --user ansible  
+
   install_nodejs:
     description: Install Node.js 13.8.0
     steps:
@@ -215,7 +238,8 @@ jobs:
           name: Run Playbook and Configure Server
           command: |
             cd .circleci/ansible
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt configure-server.yml
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment    
 
   run-migrations:
@@ -284,7 +308,8 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      - destroy-environment 
+      - destroy-environment
+      - revert-migrations
       # - send-notification      
 
   deploy-backend:
@@ -314,9 +339,10 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents of the inventory.txt file is -------"
-            cat .circleci/ansible/inventory.txt
-            ansible-playbook -i .circleci/ansible/inventory.txt deploy-backend.yml
+            cat ~/project/.circleci/ansible/inventory.txt
+            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt deploy-backend.yml
       - destroy-environment 
+      - revert-migrations
                  
 workflows:
   default:
