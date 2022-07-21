@@ -9,13 +9,14 @@
     src: ~/project/artifact.tar.gz
     dest: ~/udapeople
 
-- name: "Install Dependencies"
+- name: "Install Dependencies and build app"
   shell: |
     cd ~/udapeople
-    ls -a
     npm install
+    npm run build
 
 - name: "Run pm2"
   shell: |
     cd ~/udapeople
+    pm2 stop default
     pm2 start npm -- start
