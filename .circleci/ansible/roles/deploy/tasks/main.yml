@@ -6,10 +6,11 @@
 
 - name: "Extract the backend"
   shell: |
-    tar -czvf backend.tar.gz ~/udapeople
+    tar xvfz backend.tar.gz ~/udapeople
 
 - name: "Install Dependencies"
   shell: |
+    cd ~/udapeople/backend
     npm install
 
 
