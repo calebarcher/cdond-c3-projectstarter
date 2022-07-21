@@ -208,12 +208,12 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            echo '[all]' > ~/project/.circleci/ansible/inventory.txt
-            aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicDnsName' \
-            --filters "Name=tag:Name,Values=node_exporter" \
-            --output text > ~/project/.circleci/ansible/inventory.txt
-            cat ~/project/.circleci/ansible/inventory.txt
+             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+              echo $BACKEND_PUBLIC_IP > .circleci/ansible/inventory.txt
+              cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -242,7 +242,7 @@ jobs:
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment    
 
   run-migrations:
@@ -271,7 +271,7 @@ jobs:
       - run:
           name: Send migration results to kvdb
           command: |   
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." project/backend/migrations_dump.txt
             then
                 curl https://kvdb.io/GBVEriFFxVK4fFHvYKGTR6/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
