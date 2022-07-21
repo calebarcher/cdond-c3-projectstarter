@@ -9,11 +9,6 @@
   apt:
     upgrade: yes
 
-- name: "Remove dependencies that are no longer required"
-  become: yes
-  apt:
-    autoremove: yes
-
 - name: "Install Node.js"
   become: yes
   shell: |
@@ -35,3 +30,8 @@
     global: yes
     production: yes
     state: present
+
+- name: "Remove dependencies that are no longer required"
+  become: yes
+  apt:
+    autoremove: yes

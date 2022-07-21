@@ -4,10 +4,10 @@
     path: ~/udapeople
     state: directory
 
-- name: "Extract the backend"
-  shell: |
-    cd ~
-    tar xvfz artifact.tar.gz -C ~/udapeople
+- name: "Extract artifact to EC2"
+  unarchive:
+    src: ~/project/artifact.tar.gz
+    dest: ~/udapeople
 
 - name: "Install Dependencies"
   shell: |
@@ -15,8 +15,7 @@
     ls -a
     npm install
 
-
 - name: "Run pm2"
   shell: |
-    cd ~/udapeople/backend
+    cd ~/udapeople
     pm2 start npm -- start
