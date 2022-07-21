@@ -12,7 +12,7 @@
 - name: "Install Dependencies and build app"
   shell: |
     cd ~/udapeople
-    export ENV_VARS = $( \
+    export ENV_VARS=$( \
     NODE_ENV=local \
     VERSION=1 \
     TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}" \
