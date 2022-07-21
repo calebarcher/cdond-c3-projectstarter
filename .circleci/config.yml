@@ -239,7 +239,7 @@ jobs:
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
+            ansible-playbook -i project/.circleci/ansible/inventory.txt configure-server.yml
       - destroy-environment    
 
   run-migrations:
@@ -268,7 +268,7 @@ jobs:
       - run:
           name: Send migration results to kvdb
           command: |   
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." project/backend/migrations_dump.txt
             then
                 curl https://kvdb.io/GBVEriFFxVK4fFHvYKGTR6/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
@@ -339,8 +339,8 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents of the inventory.txt file is -------"
-            cat ~/project/.circleci/ansible/inventory.txt
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt deploy-backend.yml
+            cat project/.circleci/ansible/inventory.txt
+            ansible-playbook -i project/.circleci/ansible/inventory.txt deploy-backend.yml
       - destroy-environment 
       - revert-migrations
                  
