@@ -362,9 +362,6 @@ jobs:
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-      - run:
-          name: Backend smoke test.
-          command: |
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
@@ -422,10 +419,7 @@ jobs:
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}"   
-      - run:
-          name: Remove old stacks and files
-          command: |
+            echo Stack names: "${STACKS[@]}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
