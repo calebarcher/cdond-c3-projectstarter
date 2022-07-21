@@ -6,6 +6,7 @@
 
 - name: "Extract the backend"
   shell: |
+    cd ~
     tar xvfz artifact.tar.gz -C ~/udapeople
 
 - name: "Install Dependencies"
