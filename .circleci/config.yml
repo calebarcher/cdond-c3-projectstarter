@@ -223,23 +223,25 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/python:3.10
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
+      - install_awscli
+      - install_nodejs
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install Ansible
-          command: |
-            apk add --update ansible
+      # - run:
+      #     name: Install Ansible
+      #     command: |
+      #       apk add --update ansible
       - run:
           name: Run Playbook and Configure Server
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i project/.circleci/ansible/inventory.txt configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment    
 
   run-migrations:
@@ -272,21 +274,19 @@ jobs:
             then
                 curl https://kvdb.io/GBVEriFFxVK4fFHvYKGTR6/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
+      - revert-migrations
       - destroy-environment 
 
 
   deploy-frontend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/python:3.10
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar gzip
-            apk add --update nodejs npm
-            apk add --update python py-pip 
-            pip install awscli
+            sudo apt install -y tar gzip
       - attach_workspace:
           at: ~/
       - run:
@@ -308,27 +308,25 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      - destroy-environment
       - revert-migrations
+      - destroy-environment
       # - send-notification      
 
   deploy-backend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/python:3.10
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
+      - install_awscli
+      - install_nodejs
       - attach_workspace:
           at: ~/
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar gzip
-            apk add --update nodejs npm
-            apk add --update ansible
-            apk add --update python py-pip 
-            pip install awscli
+            sudo apt install -y tar gzip
       - run:
           name: Deploy backend
           command: |
@@ -339,10 +337,10 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents of the inventory.txt file is -------"
-            cat project/.circleci/ansible/inventory.txt
-            ansible-playbook -i project/.circleci/ansible/inventory.txt deploy-backend.yml
-      - destroy-environment 
+            cat ~/project/.circleci/ansible/inventory.txt
+            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt deploy-backend.yml
       - revert-migrations
+      - destroy-environment 
                  
 workflows:
   default:
