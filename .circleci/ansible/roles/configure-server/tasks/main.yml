@@ -23,6 +23,11 @@
     sudo npm install -g n
     sudo n 13.8.0
 
+- name: "Install tar gzip"
+  become: yes
+  shell: |
+    sudo apt install -y tar gzip
+
 - name: "Install Pm2"
   become: yes
   npm:
