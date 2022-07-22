@@ -12,7 +12,7 @@
 - name: "Install Dependencies and build app"
   shell: |
     cd ~/udapeople
-    export ENV_VARS=$` 
+    echo "export ENV_VARS='
     NODE_ENV=local 
     VERSION=1 
     TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}" 
@@ -23,8 +23,7 @@
     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}" 
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}" 
     TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}" 
-    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"`
-    echo $ENV_VARS >> .env
+    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"'" >> .env
     npm install
 
 - name: "Run pm2"
