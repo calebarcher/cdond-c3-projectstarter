@@ -243,6 +243,30 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment  
+
+  configure-node-exporter:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["43:9b:80:68:47:bd:33:40:29:8f:f1:b6:f4:9b:1f:ca"]
+      - install_awscli
+      - install_nodejs
+      - install_ansible
+      - attach_workspace:
+          at: ~/
+      # - run:
+      #     name: Install Ansible
+      #     command: |
+      #       apk add --update ansible
+      - run:
+          name: Run Playbook and Configure Server
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment    
 
   run-migrations:
@@ -406,7 +430,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
-              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople-project-frontend
       - revert-migrations
       - destroy-environment   
@@ -449,35 +473,36 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-          context: slack_secrets
-      - scan-backend:
-          requires: [build-backend]
-          context: slack_secrets
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-          context: slack_secrets
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-          # requires: [configure-infrastructure]
-      - deploy-backend:
-          requires: [run-migrations]
-          # requires: [configure-infrastructure]
-      - smoke-test:
-          requires: [deploy-frontend, deploy-backend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [smoke-test, cloudfront-update]
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      #     context: slack_secrets
+      # - scan-backend:
+      #     requires: [build-backend]
+      #     context: slack_secrets
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [master]
+      #     context: slack_secrets
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      #     # requires: [configure-infrastructure]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      #     # requires: [configure-infrastructure]
+      # - smoke-test:
+      #     requires: [deploy-frontend, deploy-backend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [smoke-test, cloudfront-update]
+      - configure-node-exporter
