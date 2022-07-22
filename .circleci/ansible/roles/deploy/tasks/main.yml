@@ -12,18 +12,18 @@
 - name: "Install Dependencies and build app"
   shell: |
     cd ~/udapeople
-    export ENV_VARS=$( \
-    NODE_ENV=local \
-    VERSION=1 \
-    TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}" \
-    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}" \
-    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"   \
-    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT')}}" \
-    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}" \
-    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}" \
-    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}" \
-    TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}" \
-    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}" )
+    export ENV_VARS=$` 
+    NODE_ENV=local 
+    VERSION=1 
+    TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}" 
+    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}" 
+    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"   
+    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT')}}" 
+    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}" 
+    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}" 
+    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}" 
+    TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}" 
+    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"`
     echo $ENV_VARS >> .env
     npm install
 
