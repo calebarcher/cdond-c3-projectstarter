@@ -1,0 +1,11 @@
+1. GIT HUB REPO:
+https://github.com/calebarcher/cdond-c3-projectstarter
+
+2. URL02 - S3 BUCKET
+http://udapeople-3630968.s3-website-us-east-1.amazonaws.com/
+
+3. URL03 - FUNCTIONING FRONTEND
+http://dpadl74i3iwxq.cloudfront.net/#/employees
+
+4. URL04 - FUNCTIONING BACKEND
+http://52.22.7.105:3030/api/status
