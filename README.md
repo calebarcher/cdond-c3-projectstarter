@@ -14,6 +14,7 @@ The objective of this project is to build a CI/CD pipeline for a fictional proje
 - Run Smoke tests
 - Destroy the environment and revert migrations if smoketest fails
 - Clean up of old environment after successful deployment.
+- Setup Monitoring using Prometheus, Node-exporter and Alert Manager
 
 ## Tools
 
@@ -23,3 +24,4 @@ The following tools are used for this project
 - AWS Cloudformation: An IAC service that allows users to provision AWS resources using code.
 - Ansible: Ansible is used for configuring the backend EC2 instances we provisioned
 - KVDB: A key-Value data store for saving our migration results
+- Prometheus
